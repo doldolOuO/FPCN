@@ -13,3 +13,6 @@ Some of the code of this repo is borrowed from:
 - [EMD](https://github.com/Colin97/MSN-Point-Cloud-Completion/tree/master/emd)
 
 - [pytorchpointnet++](https://github.com/erikwijmans/Pointnet2_PyTorch)
+
+# License
+This project is open sourced under MIT license.
