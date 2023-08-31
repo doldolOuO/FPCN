@@ -10,4 +10,6 @@ Some of the code of this repo is borrowed from:
 
 - [ChamferDistance](https://github.com/ThibaultGROUEIX/ChamferDistancePytorch)
 
+- [EMD](https://github.com/Colin97/MSN-Point-Cloud-Completion/tree/master/emd)
+
 - [pytorchpointnet++](https://github.com/erikwijmans/Pointnet2_PyTorch)
