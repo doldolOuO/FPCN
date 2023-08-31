@@ -8,4 +8,6 @@ Some of the code of this repo is borrowed from:
 
 - [GRNet](https://github.com/hzxie/GRNet)
 
-- [ChamferDistancePytorch](https://github.com/ThibaultGROUEIX/ChamferDistancePytorch)
+- [ChamferDistance](https://github.com/ThibaultGROUEIX/ChamferDistancePytorch)
+
+- [pytorchpointnet++](https://github.com/erikwijmans/Pointnet2_PyTorch)
