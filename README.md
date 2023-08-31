@@ -3,7 +3,7 @@ Code for "Fast Point Completion Network"
 
 The core code for FPCN is coming soon.
 
-# Acknowledgements
+## Acknowledgements
 Some of the code of this repo is borrowed from:
 
 - [GRNet](https://github.com/hzxie/GRNet)
@@ -14,5 +14,5 @@ Some of the code of this repo is borrowed from:
 
 - [pytorchpointnet++](https://github.com/erikwijmans/Pointnet2_PyTorch)
 
-# License
+## License
 This project is open sourced under MIT license.
