@@ -1,7 +1,7 @@
 # Fast Point Completion Network
 Code for "Fast Point Completion Network"
 
-The core code of FPCN is coming soon.
+![image](https://github.com/doldolOuO/FPCN/blob/main/FPCN.png)
 
 ## Acknowledgements
 Some of the code of this repo is borrowed from:
