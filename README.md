@@ -1,9 +1,11 @@
-# Fast Point Completion Network
+## Fast Point Completion Network
 Code for "Fast Point Completion Network"
 
 ![image](https://github.com/doldolOuO/FPCN/blob/main/FPCN.png)
 
-# Cite this work
+## Cite this work
+
+```
 @software{fang2024fpcn,
   title={Fast Point Completion Network},
   author={Fang, Chenghao and 
@@ -14,6 +16,13 @@ Code for "Fast Point Completion Network"
   year={2024}
   doi={https://doi.org/10.1007/s00521-024-09624-y}
 }
+```
+
+## Datasets
+
+We use the [ShapeNet](https://www.shapenet.org/) and [KITTI](http://www.cvlibs.net/datasets/kitti/) datasets in our experiments, which are available below:
+- [ShapeNet](https://drive.google.com/drive/folders/1P_W1tz5Q4ZLapUifuOE4rFAZp6L1XTJz)
+- [KITTI](https://drive.google.com/drive/folders/1fSu0_huWhticAlzLh3Ejpg8zxzqO1z-F)
 
 ## Acknowledgements
 Some of the code of this repo is borrowed from:
