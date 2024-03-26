@@ -15,9 +15,8 @@ __C.DATASETS.SHAPENET                            = edict()
 __C.DATASETS.SHAPENET.CATEGORY_FILE_PATH         = './datasets/ShapeNet.json'
 __C.DATASETS.SHAPENET.N_RENDERINGS               = 8
 __C.DATASETS.SHAPENET.N_POINTS                   = 2048
-__C.DATASETS.SHAPENET.PARTIAL_POINTS_PATH        = '/home/doldolouo/completion/data/ShapeNet/shapenet2048/%s/partial/%s/%s.h5'
-__C.DATASETS.SHAPENET.COMPLETE_POINTS_PATH       = '/home/doldolouo/completion/data/ShapeNet/shapenet2048/%s/complete/%s/%s.h5'
-# __C.DATASETS.SHAPENET.TEST_PARTIAL_POINTS_PATH   =  '/home/user-1/WHK/data/shape_net_completion_h5/%s/partial/%s/%s/00.pcd'
+__C.DATASETS.SHAPENET.PARTIAL_POINTS_PATH        = '/home/doldolouo/completion/data/shapenet2048/%s/partial/%s/%s.h5'
+__C.DATASETS.SHAPENET.COMPLETE_POINTS_PATH       = '/home/doldolouo/completion/data/shapenet2048/%s/complete/%s/%s.h5'
 
 __C.DATASETS.KITTI                               = edict()
 __C.DATASETS.KITTI.CATEGORY_FILE_PATH            = './datasets/KITTI.json'

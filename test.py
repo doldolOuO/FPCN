@@ -14,9 +14,9 @@ from ChamferDistance import ChamferDistanceMean, ChamferDistanceFscore, ChamferD
 from EMDistance import emd_module
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_name', default='Ours', help='model name')
+parser.add_argument('--model_name', default='FPCN', help='model name')
 parser.add_argument('--dataset_name',  default='shapenet2048', help='dataset name')
-parser.add_argument('--pretrain', type=str, default='./checkpoints/best.pth', help='pretrain pkl path')
+parser.add_argument('--pretrain', type=str, default='./ckpt.pth', help='pretrain pkl path')
 parser.add_argument('--manualSeed', type=int, default=1, help='manual seed')
 parser.add_argument('--batchsize', type=int, default=150, help='input batch size')
 parser.add_argument('--cuda', type = bool, default = True, help='enables cuda')
