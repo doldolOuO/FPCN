@@ -6,7 +6,7 @@ Code for "Fast Point Completion Network"
 ## Cite this work
 
 ```
-@software{fang2024fpcn,
+@article{fang2024fpcn,
   title={Fast Point Completion Network},
   author={Fang, Chenghao and 
           Yang, Bing and 
