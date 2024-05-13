@@ -127,8 +127,6 @@ class multi_scale_attention_encoder(nn.Module):
         self.mlp_2 = MLP_CONV(3, [32,64])
         self.atten1 = cross_attentinon(64, 64)
         self.atten2 = cross_attentinon(64, 64)
-        # self.mlp_up = MLP_CONV(64, [128, 512])
-        # self.mlp_coarse = MLP(512, [512, num_coarse*3])
         
     def forward(self, xyz):
         B, N, _ = xyz.shape
@@ -146,9 +144,7 @@ class multi_scale_attention_encoder(nn.Module):
         
         level1 = self.atten1(level1, level0) # B 64 512
         level2 = self.atten2(level2, level1) # B 64 256
-        # x_256 = self.mlp_up(x_256) # B 512 256
         global_feature = torch.max(level2, 2)[0] # B 64
-        # coarse = self.mlp_coarse(global_feature).reshape(B, -1, self.num_coarse) # B 3 512
         return global_feature
 
 
@@ -195,9 +191,9 @@ class structural_refinement_module(nn.Module):
         # project feature
         input_cat = torch.cat([coarse, g_f.unsqueeze(2).repeat(1, 1, N)], dim=1)
         coarse_f = self.mlp_coarse(input_cat) # B dim1 N
-        # Detail/Local Extractor
+        # geometric detail extractor
         detail_f = self.gde(coarse, coarse_f) # B dim2/up_factor N*up_factor
-        # Global feature
+        # global structure extractor
         global_f = self.deconv(self.mlp_g(coarse_f)) # B dim3 N*up_factor
         # output
         delta_cat = torch.cat([self.up(coarse), self.up(coarse_f), detail_f, global_f], dim=1)
@@ -219,6 +215,7 @@ class FPCN(nn.Module):
 
     def forward(self, xyz):
         B, _, _ = xyz.shape
+        # multi-scale attention encoder
         g_f = self.encoder(xyz)
         # fc coarse decoder
         coarse = self.mlp_coarse(self.mlp_up(g_f)).reshape(B, -1, self.num_coarse) # B 3 num_coarse
@@ -226,11 +223,10 @@ class FPCN(nn.Module):
         input_fps = symmetric_sample(xyz, int(self.num_coarse/2))  # B 512 3
         input_fps = input_fps.transpose(2, 1).contiguous()  # B 3 512
         new_x = torch.cat([input_fps, coarse], 2) # B 3 1024
-        # lifting module
+        # structural refinement module
         coarse_input = new_x
         out = []
         out.append(coarse.transpose(1, 2).contiguous())
-        # out.append(coarse_input.transpose(1, 2).contiguous())
         for layer in self.SR:
             coarse_input = layer(coarse_input, g_f)
             out.append(coarse_input.transpose(1, 2).contiguous())
