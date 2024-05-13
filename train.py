@@ -9,7 +9,7 @@ from datetime import datetime
 import logging
 from tqdm import tqdm
 import numpy as np
-from models.model import Model
+from models.model import FPCN as Model
 from config import cfg
 from utils import data_loaders
 from models.utils import fps_subsample as fps_operator
