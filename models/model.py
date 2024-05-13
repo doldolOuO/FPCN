@@ -83,9 +83,9 @@ class point_shuffler(nn.Module):
         return ou
     
     
-class cross_transformer(nn.Module):
+class cross_attentinon(nn.Module):
     def __init__(self, d_model=256, d_model_out=256, nhead=4, dim_feedforward=1024, dropout=0.0):
-        super().__init__()
+        super(cross_attentinon, self).__init__()
         self.multihead_attn1 = nn.MultiheadAttention(d_model_out, nhead, dropout=dropout)
         self.linear11 = nn.Linear(d_model_out, dim_feedforward)
         self.dropout1 = nn.Dropout(dropout)
@@ -116,17 +116,19 @@ class cross_transformer(nn.Module):
         return src1
 
 
-class MultiScale_Atten_Encoder(nn.Module): # Multi-Scale Attention Encoder
+class multi_scale_attention_encoder(nn.Module):
     def __init__(self, num_coarse=512, u1=4, u2=8):
-        super(MultiScale_Atten_Encoder, self).__init__()
+        super(multi_scale_attention_encoder, self).__init__()
         self.u1 = u1
         self.u2 = u2
         self.num_coarse = num_coarse
         self.mlp_0 = MLP_CONV(3, [32,64])
         self.mlp_1 = MLP_CONV(3, [32,64])
         self.mlp_2 = MLP_CONV(3, [32,64])
-        self.atten1 = cross_transformer(64, 64)
-        self.atten2 = cross_transformer(64, 64)
+        self.atten1 = cross_attentinon(64, 64)
+        self.atten2 = cross_attentinon(64, 64)
+        # self.mlp_up = MLP_CONV(64, [128, 512])
+        # self.mlp_coarse = MLP(512, [512, num_coarse*3])
         
     def forward(self, xyz):
         B, N, _ = xyz.shape
@@ -144,13 +146,15 @@ class MultiScale_Atten_Encoder(nn.Module): # Multi-Scale Attention Encoder
         
         level1 = self.atten1(level1, level0) # B 64 512
         level2 = self.atten2(level2, level1) # B 64 256
+        # x_256 = self.mlp_up(x_256) # B 512 256
         global_feature = torch.max(level2, 2)[0] # B 64
+        # coarse = self.mlp_coarse(global_feature).reshape(B, -1, self.num_coarse) # B 3 512
         return global_feature
 
 
-class Geometry_Extractor(nn.Module):
+class geometric_detail_extractor(nn.Module):
     def __init__(self, in_dim=64, out_dim=64, k=20, up_factor=2):
-        super(Geometry_Extractor, self).__init__()
+        super(geometric_detail_extractor, self).__init__()
         self.k = k
         self.conv = nn.Sequential(nn.Conv2d(in_dim*2, out_dim // 2, kernel_size=1, bias=False),
                                    nn.BatchNorm2d(out_dim // 2),
@@ -172,14 +176,14 @@ class Geometry_Extractor(nn.Module):
         return f                                                               # B out_dim/up_factor N*up_factor
     
     
-class Tree_Decoder(nn.Module): # Structral Refinement Module
+class structural_refinement_module(nn.Module):
     def __init__(self, i=1, up_factor=2, k=20, dim1=64, dim2=128, dim3=64):
-        super(Tree_Decoder, self).__init__()
+        super(structural_refinement_module, self).__init__()
         self.up_factor = up_factor
         self.up = nn.Upsample(scale_factor=up_factor)
         self.mlp_up = MLP(64, [128, 512+i*256])
         self.mlp_coarse = MLP_CONV(3 + 512+i*256, [dim1])
-        self.GE = Geometry_Extractor(dim1, dim2, k, up_factor)
+        self.gde = geometric_detail_extractor(dim1, dim2, k, up_factor)
         self.delta = MLP_CONV(3 + dim1 + int(dim2/up_factor) + dim3, [256, 256, 3])
         self.mlp_g = MLP_CONV(dim1, [64, 32])
         self.deconv = nn.ConvTranspose1d(32, dim3, up_factor, up_factor, bias=False)
@@ -192,7 +196,7 @@ class Tree_Decoder(nn.Module): # Structral Refinement Module
         input_cat = torch.cat([coarse, g_f.unsqueeze(2).repeat(1, 1, N)], dim=1)
         coarse_f = self.mlp_coarse(input_cat) # B dim1 N
         # Detail/Local Extractor
-        detail_f = self.GE(coarse, coarse_f) # B dim2/up_factor N*up_factor
+        detail_f = self.gde(coarse, coarse_f) # B dim2/up_factor N*up_factor
         # Global feature
         global_f = self.deconv(self.mlp_g(coarse_f)) # B dim3 N*up_factor
         # output
@@ -201,17 +205,17 @@ class Tree_Decoder(nn.Module): # Structral Refinement Module
         return fine
     
 
-class Model(nn.Module): # FPCN
+class FPCN(nn.Module):
     def __init__(self, num_coarse=512, up_factor=[2]):
-        super(Model, self).__init__()
+        super(FPCN, self).__init__()
         self.num_coarse = num_coarse
-        self.encoder = MultiScale_Atten_Encoder(num_coarse)
+        self.encoder = multi_scale_attention_encoder(num_coarse)
         self.mlp_up = MLP(64, [128, num_coarse])
         self.mlp_coarse = MLP(num_coarse, [num_coarse, num_coarse*3])
-        TD = []
+        SR = []
         for i, factor in enumerate(up_factor):
-            TD.append(Tree_Decoder(i+1, factor))
-        self.TD = nn.ModuleList(TD)
+            SR.append(structural_refinement_module(i+1, factor))
+        self.SR = nn.ModuleList(SR)
 
     def forward(self, xyz):
         B, _, _ = xyz.shape
@@ -222,16 +226,12 @@ class Model(nn.Module): # FPCN
         input_fps = symmetric_sample(xyz, int(self.num_coarse/2))  # B 512 3
         input_fps = input_fps.transpose(2, 1).contiguous()  # B 3 512
         new_x = torch.cat([input_fps, coarse], 2) # B 3 1024
+        # lifting module
         coarse_input = new_x
         out = []
         out.append(coarse.transpose(1, 2).contiguous())
-        for layer in self.TD:
+        # out.append(coarse_input.transpose(1, 2).contiguous())
+        for layer in self.SR:
             coarse_input = layer(coarse_input, g_f)
             out.append(coarse_input.transpose(1, 2).contiguous())
         return out # 512 2048
-
-
-if __name__ == '__main__':
-    x = torch.rand(1, 2048, 3).cuda()
-    model = Model().cuda()
-    out = model(x)
