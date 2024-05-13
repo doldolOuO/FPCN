@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime
 import logging
 from tqdm import tqdm
-from models.model import Model
+from models.model import FPCN as Model
 from config import cfg
 from utils import data_loaders
 from ChamferDistance import ChamferDistanceMean, ChamferDistanceFscore, ChamferDistanceSqrt
