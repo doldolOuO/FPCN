@@ -1,5 +1,5 @@
 ## Fast Point Completion Network
-Code for "Fast Point Completion Network"[Link](https://link.springer.com/article/10.1007/s00521-024-09624-y)
+Code for "Fast Point Completion Network" [Link](https://link.springer.com/article/10.1007/s00521-024-09624-y)
 
 ![image](https://github.com/doldolOuO/FPCN/blob/main/FPCN.png)
 
