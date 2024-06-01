@@ -13,7 +13,10 @@ Code for "Fast Point Completion Network"
           Ye, Hailiang and 
           Cao, Feilong},
   journal={Neural Computing and Applications},
-  year={2024}
+  year={2024},
+  volume={36},
+  number={18},
+  pages={14975-14989},
   doi={https://doi.org/10.1007/s00521-024-09624-y}
 }
 ```
