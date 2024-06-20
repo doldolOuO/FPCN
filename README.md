@@ -1,5 +1,5 @@
 ## Fast Point Completion Network
-Code for "Fast Point Completion Network" [Link](https://link.springer.com/article/10.1007/s00521-024-09624-y)
+This is the official PyTorch implementation of [Fast Point Completion Network](https://link.springer.com/article/10.1007/s00521-024-09624-y) (Neural Computing and Applications 2024).
 
 ![image](https://github.com/doldolOuO/FPCN/blob/main/FPCN.png)
 
