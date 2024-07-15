@@ -15,8 +15,7 @@ This is the official PyTorch implementation of [Fast Point Completion Network](h
   journal={Neural Computing and Applications},
   year={2024},
   volume={36},
-  number={18},
-  pages={14975-14989},
+  pages={10897-10913},
   doi={https://doi.org/10.1007/s00521-024-09624-y}
 }
 ```
